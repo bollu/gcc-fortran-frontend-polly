@@ -2583,34 +2583,41 @@ gfc_conv_tmp_array_ref (gfc_se * se)
   gfc_advance_se_ss_chain (se);
 }
 
-
+// See: gfc_call_malloc
 static tree call_polly_index(gfc_se *se,
         stmtblock_t *parent_block,
         tree *original_index, 
         gfc_array_ref *ar) {
-  tree fncall, var, result;
+  tree fncall, var;
   int i;
   stmtblock_t block;
-  // HACK: dynamically allocate this.
-  tree strides[1000];
+  gfc_se indexse;
+  // hack: dynamically allocate this.
+  tree params[1000];
 
   gfc_init_block (&block);
   var = gfc_create_var(gfc_array_index_type, "inc");
 
   for (i = 0; i < ar->dimen; i++) {
-      strides[i] = gfc_conv_array_stride (se->expr, i);
+      params[i] = gfc_conv_array_stride (se->expr, i);
+  }
+
+  for(i = 0; i < ar->dimen; i++) {
+      gfc_init_se (&indexse, se);
+      gfc_conv_expr_type (&indexse, ar->start[i], gfc_array_index_type);
+      params[ar->dimen + i] = indexse.expr;
   }
 
   fncall = build_call_expr_loc_array(input_location,
           gfor_fndecl_polly_array_index[ar->dimen],
-          ar->dimen,
-          strides);
+          ar->dimen * 2,
+          params);
   gfc_add_modify(&block, var, fncall);
-  result = gfc_finish_block (&block);
+  gfc_finish_block (&block);
 
-  // return var;
   return fncall;
 }
+
 
 /* Build an array reference.  se->expr already holds the array descriptor.
    This should be either a variable, indirect variable reference or component
