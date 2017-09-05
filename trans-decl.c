@@ -2945,21 +2945,21 @@ gfc_build_builtin_function_decls (void)
 
  gfor_fndecl_polly_array_index[1] = gfc_build_library_function_decl (
          get_identifier (PREFIX("polly_array_index_1")),
-         gfc_array_index_type, 1,
+         gfc_array_index_type, 2,
          gfc_array_index_type,
          gfc_array_index_type);
  /* tree_this_volatile ((gfor_fndecl_polly_array_index[1])) = 1; */
   
  gfor_fndecl_polly_array_index[2] = gfc_build_library_function_decl (
          get_identifier (PREFIX("polly_array_index_2")),
-         gfc_array_index_type, 2,
+         gfc_array_index_type, 4,
          gfc_array_index_type, gfc_array_index_type,
          gfc_array_index_type, gfc_array_index_type);
  /* tree_this_volatile (gfor_fndecl_polly_array_index[2]) = 1; */
 
  gfor_fndecl_polly_array_index[3] = gfc_build_library_function_decl (
          get_identifier (PREFIX("polly_array_index_3")),
-         gfc_array_index_type, 3,
+         gfc_array_index_type, 6,
          gfc_array_index_type, gfc_array_index_type, gfc_array_index_type,
          gfc_array_index_type, gfc_array_index_type, gfc_array_index_type);
  /* tree_this_volatile ((gfor_fndecl_polly_array_index[3])) = 1; */

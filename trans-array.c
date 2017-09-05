@@ -2732,7 +2732,8 @@ gfc_conv_array_ref (gfc_se * se, gfc_array_ref * ar, gfc_symbol * sym,
   tmp = gfc_conv_array_data (se->expr);
   tmp = build_fold_indirect_ref (tmp);
 
-  printf("# TIMESTAMP: %s - %s\n", __DATE__, __TIME__);
+  printf("# TIMESTAMP: %s - %s\n", __DATE__, __TIME__); 
+
   printf("======\n");
   index = call_polly_index(se, &se->pre, index, ar);
   printf("======\n");
