@@ -2584,6 +2584,34 @@ gfc_conv_tmp_array_ref (gfc_se * se)
 }
 
 
+static tree call_polly_index(gfc_se *se,
+        stmtblock_t *parent_block,
+        tree *original_index, 
+        gfc_array_ref *ar) {
+  tree fncall, var, result;
+  int i;
+  stmtblock_t block;
+  // HACK: dynamically allocate this.
+  tree strides[1000];
+
+  gfc_init_block (&block);
+  var = gfc_create_var(gfc_array_index_type, "inc");
+
+  for (i = 0; i < ar->dimen; i++) {
+      strides[i] = gfc_conv_array_stride (se->expr, i);
+  }
+
+  fncall = build_call_expr_loc_array(input_location,
+          gfor_fndecl_polly_array_index[ar->dimen],
+          ar->dimen,
+          strides);
+  gfc_add_modify(&block, var, fncall);
+  result = gfc_finish_block (&block);
+
+  // return var;
+  return fncall;
+}
+
 /* Build an array reference.  se->expr already holds the array descriptor.
    This should be either a variable, indirect variable reference or component
    reference.  For arrays which do not have a descriptor, se->expr will be
@@ -2696,6 +2724,12 @@ gfc_conv_array_ref (gfc_se * se, gfc_array_ref * ar, gfc_symbol * sym,
   /* Access the calculated element.  */
   tmp = gfc_conv_array_data (se->expr);
   tmp = build_fold_indirect_ref (tmp);
+
+  printf("# TIMESTAMP: %s - %s\n", __DATE__, __TIME__);
+  printf("======\n");
+  index = call_polly_index(se, &se->pre, index, ar);
+  printf("======\n");
+
   se->expr = gfc_build_array_ref (tmp, index, sym->backend_decl);
 }
 

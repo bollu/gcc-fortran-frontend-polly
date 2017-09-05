@@ -85,6 +85,7 @@ tree gfc_static_ctors;
 
 /* Function declarations for builtin library functions.  */
 
+tree gfor_fndecl_polly_array_index[NPOLLYFUNC];
 tree gfor_fndecl_pause_numeric;
 tree gfor_fndecl_pause_string;
 tree gfor_fndecl_stop_numeric;
@@ -2933,6 +2934,32 @@ gfc_build_builtin_function_decls (void)
 	void_type_node, 2, pchar_type_node, gfc_int4_type_node);
   /* ERROR STOP doesn't return.  */
   TREE_THIS_VOLATILE (gfor_fndecl_error_stop_string) = 1;
+
+ /* *** POLLY *** */
+ printf("Building polly_array_index function decl...\n");
+ 
+ gfor_fndecl_polly_array_index[0] = gfc_build_library_function_decl (
+         get_identifier (PREFIX("polly_array_index_0")),
+         gfc_array_index_type, 0);
+ /* tree_this_volatile (gfor_fndecl_polly_array_index[0]) = 1; */
+
+ gfor_fndecl_polly_array_index[1] = gfc_build_library_function_decl (
+         get_identifier (PREFIX("polly_array_index_1")),
+         gfc_array_index_type, 1, gfc_array_index_type);
+ /* tree_this_volatile ((gfor_fndecl_polly_array_index[1])) = 1; */
+  
+ gfor_fndecl_polly_array_index[2] = gfc_build_library_function_decl (
+         get_identifier (PREFIX("polly_array_index_2")),
+         gfc_array_index_type, 2, gfc_array_index_type, gfc_array_index_type);
+ /* tree_this_volatile (gfor_fndecl_polly_array_index[2]) = 1; */
+
+ gfor_fndecl_polly_array_index[3] = gfc_build_library_function_decl (
+         get_identifier (PREFIX("polly_array_index_3")),
+         gfc_array_index_type, 3, gfc_array_index_type, gfc_array_index_type, gfc_array_index_type);
+ /* tree_this_volatile ((gfor_fndecl_polly_array_index[3])) = 1; */
+  printf("Built polly_array_index function decl.\n");
+ /* *** POLLY *** */
+
 
   gfor_fndecl_pause_numeric = gfc_build_library_function_decl (
 	get_identifier (PREFIX("pause_numeric")),
