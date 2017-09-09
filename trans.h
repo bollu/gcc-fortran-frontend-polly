@@ -592,7 +592,7 @@ struct gimplify_omp_ctx;
 void gfc_omp_firstprivatize_type_sizes (struct gimplify_omp_ctx *, tree);
 
 /* Runtime library function decls.  */
-#define NPOLLYFUNC 12
+#define NPOLLYFUNC 5
 extern GTY(()) tree gfor_fndecl_polly_array_index[NPOLLYFUNC];
 extern GTY(()) tree gfor_fndecl_pause_numeric;
 extern GTY(()) tree gfor_fndecl_pause_string;

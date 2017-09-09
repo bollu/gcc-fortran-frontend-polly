@@ -2598,19 +2598,35 @@ static tree call_polly_index(gfc_se *se,
   gfc_init_block (&block);
   var = gfc_create_var(gfc_array_index_type, "inc");
 
+ /* NOTE: Flipped dimensions imitating GEP
+  *
+  * We try to imitate how GEP orders its indeces, outermost (largest stride)
+  * to innermost (smallest stride).
+  *
+  * In the "regular" array order [0..ar->dimen-1], we get the *opposite* order:
+  * strides[0] is the SMALLEST stride := 1
+  * strides[n - 1] is the LARGEST stride
+  *
+  * So, we index the array in the *opposite* order.
+  *
+  * What we generate is morally equvalent to:
+  * GEP(offset, stride1, stride2, ... strideN, ix1, ix2, ..., ixn)
+  */
+  gcc_assert(ar->dimen <= NPOLLYFUNC - 1 && "do not have support for deeper indexing");
+  params[0] = gfc_conv_array_offset(se->expr);
   for (i = 0; i < ar->dimen; i++) {
-      params[i] = gfc_conv_array_stride (se->expr, i);
+      params[i+1] = gfc_conv_array_stride (se->expr, ar->dimen - i - 1);
   }
 
   for(i = 0; i < ar->dimen; i++) {
       gfc_init_se (&indexse, se);
-      gfc_conv_expr_type (&indexse, ar->start[i], gfc_array_index_type);
-      params[ar->dimen + i] = indexse.expr;
+      gfc_conv_expr_type (&indexse, ar->start[ar->dimen - i - 1], gfc_array_index_type);
+      params[ar->dimen + i+1] = indexse.expr;
   }
 
   fncall = build_call_expr_loc_array(input_location,
           gfor_fndecl_polly_array_index[ar->dimen],
-          ar->dimen * 2,
+          ar->dimen * 2 + 1,
           params);
   gfc_add_modify(&block, var, fncall);
   gfc_finish_block (&block);
@@ -2732,7 +2748,7 @@ gfc_conv_array_ref (gfc_se * se, gfc_array_ref * ar, gfc_symbol * sym,
   tmp = gfc_conv_array_data (se->expr);
   tmp = build_fold_indirect_ref (tmp);
 
-  printf("# TIMESTAMP: %s - %s\n", __DATE__, __TIME__); 
+  printf("# TIMESTAMP: %s - %s\n", __DATE__, __TIME__);
 
   printf("======\n");
   index = call_polly_index(se, &se->pre, index, ar);

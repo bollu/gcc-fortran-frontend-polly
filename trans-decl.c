@@ -22,6 +22,7 @@ along with GCC; see the file COPYING3.  If not see
 
 /* trans-decl.c -- Handling of backend function and variable decls, etc */
 
+#include "assert.h"
 #include "config.h"
 #include "system.h"
 #include "coretypes.h"
@@ -2940,28 +2941,41 @@ gfc_build_builtin_function_decls (void)
  
  gfor_fndecl_polly_array_index[0] = gfc_build_library_function_decl (
          get_identifier (PREFIX("polly_array_index_0")),
-         gfc_array_index_type, 0);
+         gfc_array_index_type, //return type
+         1,
+         gfc_array_index_type // offset
+         );
  /* tree_this_volatile (gfor_fndecl_polly_array_index[0]) = 1; */
 
  gfor_fndecl_polly_array_index[1] = gfc_build_library_function_decl (
          get_identifier (PREFIX("polly_array_index_1")),
-         gfc_array_index_type, 2,
+         gfc_array_index_type, 1,
+         gfc_array_index_type, //offset
          gfc_array_index_type,
          gfc_array_index_type);
  /* tree_this_volatile ((gfor_fndecl_polly_array_index[1])) = 1; */
   
  gfor_fndecl_polly_array_index[2] = gfc_build_library_function_decl (
          get_identifier (PREFIX("polly_array_index_2")),
-         gfc_array_index_type, 4,
+         gfc_array_index_type, 5,
+         gfc_array_index_type, // offset
          gfc_array_index_type, gfc_array_index_type,
          gfc_array_index_type, gfc_array_index_type);
  /* tree_this_volatile (gfor_fndecl_polly_array_index[2]) = 1; */
 
  gfor_fndecl_polly_array_index[3] = gfc_build_library_function_decl (
          get_identifier (PREFIX("polly_array_index_3")),
-         gfc_array_index_type, 6,
+         gfc_array_index_type, 7,
+         gfc_array_index_type, // offset
          gfc_array_index_type, gfc_array_index_type, gfc_array_index_type,
          gfc_array_index_type, gfc_array_index_type, gfc_array_index_type);
+
+ gfor_fndecl_polly_array_index[4] = gfc_build_library_function_decl (
+         get_identifier (PREFIX("polly_array_index_4")),
+         gfc_array_index_type, 9,
+         gfc_array_index_type, // offset
+         gfc_array_index_type, gfc_array_index_type, gfc_array_index_type, gfc_array_index_type,
+         gfc_array_index_type, gfc_array_index_type, gfc_array_index_type, gfc_array_index_type);
  /* tree_this_volatile ((gfor_fndecl_polly_array_index[3])) = 1; */
   printf("Built polly_array_index function decl.\n");
  /* *** POLLY *** */
