@@ -2949,7 +2949,7 @@ gfc_build_builtin_function_decls (void)
 
  gfor_fndecl_polly_array_index[1] = gfc_build_library_function_decl (
          get_identifier (PREFIX("polly_array_index_1")),
-         gfc_array_index_type, 1,
+         gfc_array_index_type, 3,
          gfc_array_index_type, //offset
          gfc_array_index_type,
          gfc_array_index_type);
